@@ -12,7 +12,7 @@ public class DemoApplication {
 	@ResponseBody
 
 	String Home() {
-		return "Hello World!";
+		return "Test";
 	}
 
 	public static void main(String[] args) {
