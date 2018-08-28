@@ -36,8 +36,8 @@ public class DatabaseLoader implements CommandLineRunner {
 	@Override
 	public void run(String... strings) throws Exception {
 		this.repository.save(new Envelope("Groceries", 100.00));
-		this.repository.save(new Envelope("Pets", 50.00));
-		this.repository.save(new Envelope("Gas", 75.00));
+		// this.repository.save(new Envelope("Pets", 50.00));
+		// this.repository.save(new Envelope("Gas", 75.00));
 	}
 }
 // end::code[]
