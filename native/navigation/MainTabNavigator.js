@@ -33,14 +33,14 @@ const LinksStack = createStackNavigator({
 });
 
 LinksStack.navigationOptions = {
-  tabBarLabel: 'Links',
+  tabBarLabel: 'Envelopes',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
       name={
         Platform.OS === 'ios'
-          ? `ios-link${focused ? '' : '-outline'}`
-          : 'md-link'
+          ? `ios-mail-open${focused ? '' : '-outline'}`
+          : 'md-mail-open'
       }
     />
   ),
