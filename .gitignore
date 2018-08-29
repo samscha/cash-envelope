@@ -24,8 +24,8 @@
 /nbdist/
 /.nb-gradle/
 
-### macOS ###
-.DS_Store
-
 ### Dependency directories ###
 node_modules/
+
+### macOS ###
+.DS_Store
