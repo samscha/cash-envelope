@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT $JAVA_OPTS 
+web: java -Dserver.port=$PORT $JAVA_OPTS -jar target/cash-envelope-0.0.1-SNAPSHOT.jar
