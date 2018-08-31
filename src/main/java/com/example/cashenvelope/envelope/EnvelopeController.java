@@ -1,11 +1,12 @@
 package com.example.cashenvelope.envelope;
 
+import java.util.UUID;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import javax.validation.Valid;
 
 import com.example.cashenvelope.exception.ResourceNotFoundException;
 
@@ -25,7 +26,7 @@ public class EnvelopeController {
   }
 
   @GetMapping("/envelopes/{envelopeId}")
-  public Envelope getEnvelope(@PathVariable Long envelopeId) {
+  public Envelope getEnvelope(@PathVariable UUID envelopeId) {
     return envelopeRepository.findById(envelopeId).get();
   }
 
@@ -48,7 +49,7 @@ public class EnvelopeController {
   }
 
   @PutMapping("/envelopes/{envelopeId}")
-  public Envelope updateEnvelope(@PathVariable Long envelopeId, @Valid @RequestBody Envelope envelopeRequest) {
+  public Envelope updateEnvelope(@PathVariable UUID envelopeId, @Valid @RequestBody Envelope envelopeRequest) {
     // int envelopeId = Integer.parseInt(id);
     // Envelope envelope = envelopeRepository.findById(envelopeId).get();
 
@@ -66,7 +67,7 @@ public class EnvelopeController {
   }
 
   @DeleteMapping("/envelopes/{envelopeId}")
-  public ResponseEntity<?> deleteEnvelope(@PathVariable Long envelopeId) {
+  public ResponseEntity<?> deleteEnvelope(@PathVariable UUID envelopeId) {
     // int envelopeId = Integer.parseInt(id);
 
     // envelopeRepository.deleteById(envelopeId);
