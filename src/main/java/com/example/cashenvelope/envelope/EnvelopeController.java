@@ -45,9 +45,18 @@ public class EnvelopeController {
   @PutMapping("/envelopes/{envelopeId}")
   public Envelope updateEnvelope(@PathVariable UUID envelopeId, @Valid @RequestBody Envelope envelopeRequest) {
     return envelopeRepository.findById(envelopeId).map(envelope -> {
-      envelope.setName(envelopeRequest.getName());
-      envelope.setValue(envelopeRequest.getValue());
-      envelope.setNotes(envelopeRequest.getNotes());
+
+      if (envelopeRequest.getName() != null) {
+        envelope.setName(envelopeRequest.getName());
+      }
+
+      if (envelopeRequest.getValue() != null) {
+        envelope.setValue(envelopeRequest.getValue());
+      }
+
+      if (envelopeRequest.getNotes() != null) {
+        envelope.setNotes(envelopeRequest.getNotes());
+      }
 
       return envelopeRepository.save(envelope);
     }).orElseThrow(() -> new ResourceNotFoundException("Envelope not found with id: " + envelopeId));

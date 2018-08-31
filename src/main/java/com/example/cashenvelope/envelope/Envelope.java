@@ -4,10 +4,8 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-// import javax.persistence.GenerationType;
 import javax.persistence.Id;
-// import javax.persistence.SequenceGenerator;
-import javax.validation.constraints.NotBlank;
+// import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -20,27 +18,14 @@ public class Envelope extends AuditModel {
   @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
   @Column(name = "id", updatable = false, nullable = false)
   private UUID id;
-  // private Long id;
-  // @Convert("uuidConverter")
-  // generate using PostgresQL SERIAL
-  // @GeneratedValue(strategy = GenerationType.IDENTITY)
-  // generate using custom sequencer
-  // @GeneratedValue(generator = "envelope_generator")
-  // @SequenceGenerator(
-  // name = "envelope_generator",
-  // sequenceName = "envelope_sequence",
-  // initialValue = 999
-  // )
-  // private Long id;
 
-  @NotBlank
+  // @NotBlank
   @Size(min = 2, max = 100)
   private String name;
 
-  // @NotBlank
-  // @Size(min = 1)
   private Double value;
 
+  @Size(max = 1000)
   private String notes;
 
   private static final long serialVersionUID = 42L;
