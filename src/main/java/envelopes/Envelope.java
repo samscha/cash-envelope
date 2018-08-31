@@ -1,5 +1,7 @@
 package envelopes;
 
+// import javax.persistence.*;
+
 public class Envelope {
   private int id;
   private String name;

@@ -21,7 +21,7 @@
       "cwd": "${workspaceFolder}",
       "console": "internalConsole",
       "stopOnEntry": false,
-      "mainClass": "hello.Application",
+      "mainClass": "envelopes.Application",
       "args": "",
       "projectName": "cash-envelope"
     },
