@@ -57,7 +57,7 @@ public class EnvelopeController {
         return envelopeRepository.save(envelope);
     }
 
-    @DeleteMapping("blog/{id}")
+    @DeleteMapping("envelopes/{id}")
     public boolean delete(@PathVariable String id) {
         int envelopeId = Integer.parseInt(id);
 
