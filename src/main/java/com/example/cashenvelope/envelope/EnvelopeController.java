@@ -10,15 +10,14 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.cashenvelope.exception.ResourceNotFoundException;
 
-// import java.util.List;
-// import java.util.Map;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 public class EnvelopeController {
 
   @Autowired
   private EnvelopeRepository envelopeRepository;
-  // EnvelopeMockData envelopeMockData = EnvelopeMockData.getInstance();
 
   @GetMapping("/envelopes")
   public Page<Envelope> getEnvelopes(Pageable pageable) {
@@ -30,33 +29,21 @@ public class EnvelopeController {
     return envelopeRepository.findById(envelopeId).get();
   }
 
-  // @PostMapping("/envelopes/search")
-  // public Page<Envelope> search(@RequestBody Map<String, String> body) {
-  // String query = body.get("text");
+  @PostMapping("/envelopes/search")
+  public List<Envelope> searchEnvelopes(@RequestBody Map<String, String> body) {
+    String queryName = body.get("name");
+    String queryNotes = body.get("notes");
 
-  // return envelopeRepository.findByNameContainingOrNotesContaining(query,
-  // query);
-  // }
+    return envelopeRepository.findByNameContainingOrNotesContaining(queryName, queryNotes);
+  }
 
   @PostMapping("/envelopes")
   public Envelope createEnvelope(@Valid @RequestBody Envelope envelope) {
-    // int id = Integer.parseInt(body.get("id"));
-    // String name = body.get("name");
-    // Double value = Double.parseDouble(body.get("value"));
-    // String notes = body.get("notes");
-
     return envelopeRepository.save(envelope);
   }
 
   @PutMapping("/envelopes/{envelopeId}")
   public Envelope updateEnvelope(@PathVariable UUID envelopeId, @Valid @RequestBody Envelope envelopeRequest) {
-    // int envelopeId = Integer.parseInt(id);
-    // Envelope envelope = envelopeRepository.findById(envelopeId).get();
-
-    // envelope.setName(body.get("name"));
-    // envelope.setValue(Double.parseDouble(body.get("value")));
-    // envelope.setNotes(body.get("notes"));
-
     return envelopeRepository.findById(envelopeId).map(envelope -> {
       envelope.setName(envelopeRequest.getName());
       envelope.setValue(envelopeRequest.getValue());
@@ -68,20 +55,10 @@ public class EnvelopeController {
 
   @DeleteMapping("/envelopes/{envelopeId}")
   public ResponseEntity<?> deleteEnvelope(@PathVariable UUID envelopeId) {
-    // int envelopeId = Integer.parseInt(id);
-
-    // envelopeRepository.deleteById(envelopeId);
-    // return true;
     return envelopeRepository.findById(envelopeId).map(envelope -> {
       envelopeRepository.delete(envelope);
 
       return ResponseEntity.ok().build();
     }).orElseThrow(() -> new ResourceNotFoundException("Envelope not found with id: " + envelopeId));
   }
-
-  // @RequestMapping("/")
-  // public String index() {
-  // return "asdf";
-  // }
-
 }
