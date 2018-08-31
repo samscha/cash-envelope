@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.cashenvelope.exception.ResourceNotFoundException;
+import com.example.cashenvelope.exception.UnprocessableEntityException;
 
 import java.util.List;
 import java.util.Map;
@@ -45,17 +46,35 @@ public class EnvelopeController {
   @PutMapping("/envelopes/{envelopeId}")
   public Envelope updateEnvelope(@PathVariable UUID envelopeId, @Valid @RequestBody Envelope envelopeRequest) {
     return envelopeRepository.findById(envelopeId).map(envelope -> {
+      Boolean isChanged = false;
 
-      if (envelopeRequest.getName() != null) {
-        envelope.setName(envelopeRequest.getName());
+      String name = envelopeRequest.getName();
+      Double value = envelopeRequest.getValue();
+      String notes = envelopeRequest.getNotes();
+
+      // System.out.println(name);
+      // System.out.println(envelope.getName());
+      // System.out.println(name != null);
+      // System.out.println(envelope.getName() == name);
+      // System.out.println(envelope.getName() != name);
+
+      if (name != null && !envelope.getName().equals(name)) {
+        envelope.setName(name);
+        isChanged = true;
       }
 
-      if (envelopeRequest.getValue() != null) {
-        envelope.setValue(envelopeRequest.getValue());
+      if (value != null && !envelope.getValue().equals(value)) {
+        envelope.setValue(value);
+        isChanged = true;
       }
 
-      if (envelopeRequest.getNotes() != null) {
-        envelope.setNotes(envelopeRequest.getNotes());
+      if (notes != null && !envelope.getNotes().equals(notes)) {
+        envelope.setNotes(notes);
+        isChanged = true;
+      }
+
+      if (!isChanged) {
+        throw new UnprocessableEntityException("No changes detected");
       }
 
       return envelopeRepository.save(envelope);
