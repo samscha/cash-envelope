@@ -1,4 +1,4 @@
-package com.example.cashenvelope;
+package com.example.cashenvelope.envelope;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

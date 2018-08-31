@@ -1,4 +1,4 @@
-package com.example.cashenvelope;
+package com.example.cashenvelope.envelope;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

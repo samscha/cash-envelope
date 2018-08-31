@@ -1,4 +1,4 @@
-package com.example.cashenvelope;
+package com.example.cashenvelope.envelope;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
