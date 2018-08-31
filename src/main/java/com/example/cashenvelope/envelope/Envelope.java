@@ -5,7 +5,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-// import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -19,7 +18,6 @@ public class Envelope extends AuditModel {
   @Column(name = "id", updatable = false, nullable = false)
   private UUID id;
 
-  // @NotBlank
   @Size(min = 2, max = 100)
   private String name;
 
