@@ -52,12 +52,6 @@ public class EnvelopeController {
       Double value = envelopeRequest.getValue();
       String notes = envelopeRequest.getNotes();
 
-      // System.out.println(name);
-      // System.out.println(envelope.getName());
-      // System.out.println(name != null);
-      // System.out.println(envelope.getName() == name);
-      // System.out.println(envelope.getName() != name);
-
       if (name != null && !envelope.getName().equals(name)) {
         envelope.setName(name);
         isChanged = true;
