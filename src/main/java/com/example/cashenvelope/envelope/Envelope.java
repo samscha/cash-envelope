@@ -1,16 +1,25 @@
 package com.example.cashenvelope.envelope;
 
-import com.fasterxml.jackson.annotation.*;
 import java.util.UUID;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import com.example.cashenvelope.audit.AuditModel;
 import com.example.cashenvelope.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "envelopes")

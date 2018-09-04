@@ -1,14 +1,20 @@
 package com.example.cashenvelope.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.UUID;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-// import org.hibernate.annotations.GenericGenerator;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import com.example.cashenvelope.audit.AuditModel;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+// import org.hibernate.annotations.GenericGenerator;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 @Entity
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
