@@ -1,28 +1,32 @@
 package com.example.cashenvelope.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.UUID;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import org.hibernate.annotations.GenericGenerator;
+// import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import com.example.cashenvelope.audit.AuditModel;
 
 @Entity
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+@Table(name = "\"users\"")
 public class User extends AuditModel {
   @Id
   @GeneratedValue(generator = "UUID")
-  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-  @Column(name = "id", updatable = false, nullable = false)
+  // @GenericGenerator(name = "USER_UUID", strategy =
+  // "org.hibernate.id.UUIDGenerator")
+  @Column(name = "user_id", updatable = false, nullable = false)
   private UUID id;
 
-  @Size(min = 2, max = 32)
+  @NotBlank
+  @Size(min = 7, max = 32)
   private String username;
 
-  @Size(max = 64)
+  @NotBlank
+  @Size(min = 8, max = 64)
   private String password;
 
   private static final long serialVersionUID = 42L;
@@ -45,7 +49,7 @@ public class User extends AuditModel {
     this.id = id;
   }
 
-  public void setName(String username) {
+  public void setUsername(String username) {
     this.username = username;
   }
 
@@ -59,6 +63,10 @@ public class User extends AuditModel {
 
   public String getUsername() {
     return this.username;
+  }
+
+  public String getPassword() {
+    return this.password;
   }
 
   public Boolean checkPassword(String password) {

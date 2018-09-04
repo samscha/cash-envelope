@@ -1,5 +1,7 @@
 package com.example.cashenvelope.envelope;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,15 +12,16 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.cashenvelope.exception.ResourceNotFoundException;
 import com.example.cashenvelope.exception.UnprocessableEntityException;
-
-import java.util.List;
-import java.util.Map;
+import com.example.cashenvelope.user.UserRepository;
 
 @RestController
 public class EnvelopeController {
 
   @Autowired
   private EnvelopeRepository envelopeRepository;
+
+  @Autowired
+  private UserRepository userRepository;
 
   @GetMapping("/envelopes")
   public Page<Envelope> getEnvelopes(Pageable pageable) {
@@ -38,9 +41,13 @@ public class EnvelopeController {
     return envelopeRepository.findByNameContainingOrNotesContaining(queryName, queryNotes);
   }
 
-  @PostMapping("/envelopes")
-  public Envelope createEnvelope(@Valid @RequestBody Envelope envelope) {
-    return envelopeRepository.save(envelope);
+  @PostMapping("/{userId}/envelopes")
+  public Envelope createEnvelope(@PathVariable UUID userId, @Valid @RequestBody Envelope envelope) {
+    return userRepository.findById(userId).map(user -> {
+      envelope.setOwner(user);
+
+      return envelopeRepository.save(envelope);
+    }).orElseThrow(() -> new UnprocessableEntityException("User not found with id: " + userId));
   }
 
   @PutMapping("/envelopes/{envelopeId}")
