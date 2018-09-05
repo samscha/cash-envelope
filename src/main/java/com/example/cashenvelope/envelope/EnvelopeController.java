@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import com.example.cashenvelope.exception.ResourceNotFoundException;
+import com.example.cashenvelope.exception.UnauthorizedException;
 import com.example.cashenvelope.exception.UnprocessableEntityException;
 import com.example.cashenvelope.user.UserRepository;
 
@@ -24,6 +25,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+// import io.jsonwebtoken.Claims;
+// import io.jsonwebtoken.Jws;
+// import io.jsonwebtoken.JwtException;
+// import io.jsonwebtoken.Jwts;
 
 @RestController
 public class EnvelopeController {
@@ -52,8 +58,25 @@ public class EnvelopeController {
     // });
     // }
 
-    System.out.println(token);
+    if (token.orElse(null) == null) {
+      throw new UnauthorizedException("Session expired. Please log in");
+    }
 
+    // final Key signingKey = new
+    // SecretKeySpec(DatatypeConverter.parseBase64Binary(System.getenv("SESSION_SECRET")),
+    // signatureAlgorithm.getJcaName());
+
+    // try {
+    // Jws<Claims> jwsClaims =
+    // Jwts.parser().setSigningKey(signingKey).parseClaimsJws(token);
+
+    // System.out.println(jwsClaims.getBody().get("user"));
+    // System.out.println(jwsClaims.getBody());
+
+    // } catch (JwtException e) {
+
+    // // don't trust the JWT!
+    // }
     // System.out.println(cookieValue);
 
     return envelopeRepository.findAll();
