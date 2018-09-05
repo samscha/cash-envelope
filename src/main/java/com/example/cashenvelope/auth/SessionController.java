@@ -3,6 +3,7 @@ package com.example.cashenvelope.auth;
 import java.util.Map;
 
 import com.example.cashenvelope.user.UserRepository;
+import com.example.cashenvelope.exception.UnauthorizedException;
 import com.example.cashenvelope.exception.UnprocessableEntityException;
 import com.example.cashenvelope.user.User;
 
@@ -31,28 +32,14 @@ public class SessionController {
     }
 
     if (user.checkPassword(password)) {
-      System.out.println("true");
       Session session = new Session();
       final String jws = session.createPayload(user.getUsername());
+
       sessionRepository.save(session);
+
       return jws;
     } else {
-      System.out.println("false");
-      return "false";
+      throw new UnauthorizedException("Login failed: check password and try again");
     }
-
-    // return user;
-    // .map(user -> {
-    // if (user.checkPassword(password)) {
-    // System.out.println("good pw");
-    // } else {
-    // System.out.println("bad pw");
-    // }
-    // })
-    // .orElseThrow((ÁÁÁÁÁÁÁÁÁ) -> new UnprocessableEntityException("User not found
-    // with
-    // username: " + username));
-
-    // return sessionRepository.save(session);
   }
 }

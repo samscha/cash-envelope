@@ -2,6 +2,7 @@ package com.example.cashenvelope.auth;
 
 import java.security.Key;
 import java.util.UUID;
+import java.util.Date;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.persistence.Column;
@@ -44,12 +45,13 @@ public class Session extends AuditModel {
   }
 
   public String createPayload(String username) {
-    SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+    final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
-    Key signingKey = new SecretKeySpec(DatatypeConverter.parseBase64Binary(System.getenv("SESSION_SECRET")),
+    final Key signingKey = new SecretKeySpec(DatatypeConverter.parseBase64Binary(System.getenv("SESSION_SECRET")),
         signatureAlgorithm.getJcaName());
 
-    String jws = Jwts.builder().setSubject("cashenvelope").claim("user", username).signWith(signingKey).compact();
+    final String jws = Jwts.builder().setSubject("cashenvelope").claim("user", username).setIssuedAt(new Date())
+        .signWith(signingKey).compact();
 
     this.setPayload(jws);
 
@@ -57,6 +59,7 @@ public class Session extends AuditModel {
       Jws<Claims> jwsClaims = Jwts.parser().setSigningKey(signingKey).parseClaimsJws(jws);
 
       System.out.println(jwsClaims.getBody().get("user"));
+      System.out.println(jwsClaims.getBody());
 
     } catch (JwtException e) {
 
@@ -72,23 +75,5 @@ public class Session extends AuditModel {
 
   public String getPayload() {
     return this.payload;
-  }
-
-  public Boolean login(String username, String password) {
-    return false;
-    // public Boolean login(String compactJws) {
-
-    // try {
-
-    // Jwts.parser().setSigningKey(key).parseClaimsJws(compactJws);
-
-    // // OK, we can trust this JWT
-    // return true;
-
-    // } catch (JwtException e) {
-
-    // // don't trust the JWT!
-    // return false;
-    // }
   }
 }
