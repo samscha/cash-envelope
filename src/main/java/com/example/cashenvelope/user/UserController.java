@@ -43,7 +43,9 @@ public class UserController {
 
   @GetMapping("/users/{userId}")
   public User getUser(@PathVariable UUID userId) {
-    return userRepository.findById(userId).get();
+    return userRepository.findById(userId).map(user -> {
+      return user;
+    }).orElseThrow(() -> new UnprocessableEntityException("No user found with id: " + userId));
   }
 
   // @PostMapping("/users/search")
