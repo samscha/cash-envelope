@@ -1,9 +1,13 @@
 package com.example.cashenvelope.envelope;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import com.example.cashenvelope.exception.ResourceNotFoundException;
@@ -11,9 +15,8 @@ import com.example.cashenvelope.exception.UnprocessableEntityException;
 import com.example.cashenvelope.user.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,8 +35,28 @@ public class EnvelopeController {
   private UserRepository userRepository;
 
   @GetMapping("/envelopes")
-  public Page<Envelope> getEnvelopes(Pageable pageable) {
-    return envelopeRepository.findAll(pageable);
+  public List<Envelope> getEnvelopes(Model model, HttpServletRequest request) {
+
+    // Cookie cookies = request.getCookie("cash-envelope");
+    String cookieKey = System.getenv("COOKIE_KEY");
+    Optional<String> token = Arrays.stream(request.getCookies()).filter(c -> cookieKey.equals(c.getName()))
+        .map(Cookie::getValue).findAny();
+    // String jws;
+
+    // if (cookies != null) {
+    // Arrays.stream(cookies).forEach(c -> {
+    // // System.out.println(c.getName() + "=" + c.getValue());
+    // if (c.getName() == "cash-envelope") {
+    // jws = c.getValue();
+    // }
+    // });
+    // }
+
+    System.out.println(token);
+
+    // System.out.println(cookieValue);
+
+    return envelopeRepository.findAll();
   }
 
   @GetMapping("/envelopes/{envelopeId}")

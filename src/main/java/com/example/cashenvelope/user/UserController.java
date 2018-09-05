@@ -1,13 +1,12 @@
 package com.example.cashenvelope.user;
 
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import javax.validation.Valid;
 
-import com.example.cashenvelope.envelope.Envelope;
-import com.example.cashenvelope.envelope.EnvelopeRepository;
+// import com.example.cashenvelope.envelope.Envelope;
+// import com.example.cashenvelope.envelope.EnvelopeRepository;
 import com.example.cashenvelope.exception.ResourceNotFoundException;
 import com.example.cashenvelope.exception.UnprocessableEntityException;
 
@@ -29,30 +28,30 @@ public class UserController {
   @Autowired
   private UserRepository userRepository;
 
-  @Autowired
-  private EnvelopeRepository envelopeRepository;
+  // @Autowired
+  // private EnvelopeRepository envelopeRepository;
 
   @GetMapping("/users")
   public Page<User> getUsers(Pageable pageable) {
     return userRepository.findAll(pageable);
   }
 
-  @GetMapping("/usersenv/{userId}")
-  public List<Envelope> getUserEnvelopes(@PathVariable UUID userId) {
-    return envelopeRepository.findByUserId(userId);
-  }
+  // @GetMapping("/{userId}")
+  // public List<Envelope> getUserEnvelopes(@PathVariable UUID userId) {
+  // return envelopeRepository.findByUserId(userId);
+  // }
 
   @GetMapping("/users/{userId}")
   public User getUser(@PathVariable UUID userId) {
     return userRepository.findById(userId).get();
   }
 
-  @PostMapping("/users/search")
-  public List<User> searchUsers(@RequestBody Map<String, String> body) {
-    String query = body.get("username");
+  // @PostMapping("/users/search")
+  // public List<User> searchUsers(@RequestBody Map<String, String> body) {
+  // String query = body.get("username");
 
-    return userRepository.findByUsernameContaining(query);
-  }
+  // return userRepository.findByUsernameContaining(query);
+  // }
 
   @PostMapping("/users/{userId}/checkpw")
   public Boolean checkUserPw(@PathVariable UUID userId, @Valid @RequestBody Map<String, String> body) {
