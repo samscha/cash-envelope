@@ -33,7 +33,38 @@ public class SessionController {
   private UserRepository userRepository;
 
   @PostMapping("/login")
-  public ResponseEntity<String> login(@RequestBody Map<String, String> body, HttpServletResponse response) {
+  public ResponseEntity<String> login(@RequestBody Map<String, String> body, HttpServletRequest request,
+      HttpServletResponse response) {
+    /**
+     * if there are cookies present
+     */
+    if (request.getCookies() != null) {
+      /**
+       * retrieve cookie key from env var
+       */
+      String cookieKey = System.getenv("COOKIE_KEY");
+
+      /**
+       * parse request cookies for `cookieKey`
+       */
+      Optional<String> token = Arrays.stream(request.getCookies()).filter(c -> cookieKey.equals(c.getName()))
+          .map(Cookie::getValue).findAny();
+
+      /**
+       * if token isn't empty, check for session in db
+       */
+      if (token.orElse(null) != null) {
+        final Session foundSession = sessionRepository.findByPayload(token.get());
+
+        /**
+         * if session is not null, delete session
+         */
+        if (foundSession != null) {
+          sessionRepository.delete(foundSession);
+        }
+      }
+    }
+
     final String username = body.get("username");
     final String password = body.get("password");
 
@@ -52,11 +83,10 @@ public class SessionController {
 
       if (foundSession == null) {
         sessionRepository.save(session);
-      } else {
-        /**
-         * session exists in db, do nothing
-         */
       }
+      /**
+       * else session exists in db, do nothing
+       */
 
       Cookie cookie = new Cookie(System.getenv("COOKIE_KEY"), jws);
 
