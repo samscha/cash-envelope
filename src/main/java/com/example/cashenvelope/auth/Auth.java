@@ -2,7 +2,6 @@ package com.example.cashenvelope.auth;
 
 import java.security.Key;
 import java.util.Arrays;
-// import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -74,9 +73,7 @@ public class Auth {
       req.authenticate();
 
       return req;
-    } catch (
-
-    JwtException e) {
+    } catch (JwtException e) {
       /**
        * if jws verification fails, force re-login
        */

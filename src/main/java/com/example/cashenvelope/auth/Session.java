@@ -1,7 +1,6 @@
 package com.example.cashenvelope.auth;
 
 import java.security.Key;
-// import java.util.Date;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -14,6 +13,9 @@ import com.example.cashenvelope.audit.AuditModel;
 
 import io.jsonwebtoken.Jwts;
 
+/**
+ * sessions tbl for checking if a user session exists
+ */
 @Entity
 @Table(name = "sessions")
 public class Session extends AuditModel {
@@ -22,6 +24,13 @@ public class Session extends AuditModel {
   @Column(name = "id", updatable = false, nullable = false)
   private UUID id;
 
+  /**
+   * the payload in each session is the String jws sent as cookie in response
+   * 
+   * each user session should be UNIQUE (enforceable because only userId is set as
+   * a claim in jwt)
+   *
+   */
   @Column(unique = true)
   private String payload;
 
@@ -56,16 +65,4 @@ public class Session extends AuditModel {
   public String getPayload() {
     return this.payload;
   }
-
-  // public void addConnection() {
-  // this.connections += 1;
-  // }
-
-  // public void removeConnection() {
-  // this.connections -= 1;
-  // }
-
-  // public Integer getConnections() {
-  // return this.connections;
-  // }
 }

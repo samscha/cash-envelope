@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 import com.example.cashenvelope.audit.AuditModel;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-// import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 @Entity
@@ -22,8 +22,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 public class User extends AuditModel {
   @Id
   @GeneratedValue(generator = "UUID")
-  // @GenericGenerator(name = "USER_UUID", strategy =
-  // "org.hibernate.id.UUIDGenerator")
+  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
   @Column(name = "user_id", updatable = false, nullable = false)
   private UUID id;
 

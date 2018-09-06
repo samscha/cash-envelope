@@ -7,6 +7,9 @@ import com.example.cashenvelope.auth.Session;
 import com.example.cashenvelope.auth.SessionRepository;
 import com.example.cashenvelope.exception.UnauthorizedException;
 
+/**
+ * this class is like `req` or `res.locals` in Express/Node
+ */
 public class Request {
   private UUID userId;
   private String token;
