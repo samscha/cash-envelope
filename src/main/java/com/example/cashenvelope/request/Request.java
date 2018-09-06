@@ -3,6 +3,8 @@ package com.example.cashenvelope.request;
 
 import java.util.UUID;
 
+import com.example.cashenvelope.auth.Session;
+import com.example.cashenvelope.auth.SessionRepository;
 import com.example.cashenvelope.exception.UnauthorizedException;
 
 public class Request {
@@ -33,8 +35,17 @@ public class Request {
     return this.token;
   }
 
-  public void check() {
+  public void check(SessionRepository sessionRepository) {
     if (!this.authentic)
-      throw new UnauthorizedException("Unknown error occured");
+      throw new UnauthorizedException("Decode not authenticated");
+
+    /**
+     * check that there is a session present in db
+     */
+    final Session foundSession = sessionRepository.findByPayload(this.token);
+
+    if (foundSession == null) {
+      throw new UnauthorizedException("Session expired. Please log in");
+    }
   }
 }

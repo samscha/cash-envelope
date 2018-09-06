@@ -1,24 +1,21 @@
 package com.example.cashenvelope.envelope;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import com.example.cashenvelope.auth.Auth;
-import com.example.cashenvelope.auth.Session;
 import com.example.cashenvelope.auth.SessionRepository;
 import com.example.cashenvelope.exception.ResourceNotFoundException;
-import com.example.cashenvelope.exception.UnauthorizedException;
 import com.example.cashenvelope.exception.UnprocessableEntityException;
 import com.example.cashenvelope.request.Request;
 import com.example.cashenvelope.user.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-// import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,16 +44,7 @@ public class EnvelopeController {
      * similar to `req` in Express/Node (or res.locals)
      */
     final Request req = Auth.decodeRequest(request);
-    req.check();
-
-    /**
-     * check that there is a session present in db
-     */
-    Session foundSession = sessionRepository.findByPayload(req.getToken());
-
-    if (foundSession == null) {
-      throw new UnauthorizedException("Session expired. Please log in");
-    }
+    req.check(sessionRepository);
 
     return envelopeRepository.findByUserId(req.getUserId());
   }
@@ -64,7 +52,7 @@ public class EnvelopeController {
   @GetMapping("/envelopes/{envelopeId}")
   public Envelope getEnvelope(@PathVariable UUID envelopeId, HttpServletRequest request) {
     final Request req = Auth.decodeRequest(request);
-    req.check();
+    req.check(sessionRepository);
 
     return envelopeRepository.findById(envelopeId).get();
   }
@@ -72,7 +60,7 @@ public class EnvelopeController {
   @PostMapping("/envelopes/search")
   public List<Envelope> searchEnvelopes(@RequestBody Map<String, String> body, HttpServletRequest request) {
     final Request req = Auth.decodeRequest(request);
-    req.check();
+    req.check(sessionRepository);
 
     String queryName = body.get("name");
     String queryNotes = body.get("notes");
@@ -83,7 +71,7 @@ public class EnvelopeController {
   @PostMapping("/envelopes")
   public Envelope createEnvelope(@Valid @RequestBody Envelope envelope, HttpServletRequest request) {
     final Request req = Auth.decodeRequest(request);
-    req.check();
+    req.check(sessionRepository);
 
     return userRepository.findById(req.getUserId()).map(user -> {
       envelope.setOwner(user);
@@ -96,7 +84,7 @@ public class EnvelopeController {
   public Envelope updateEnvelope(@PathVariable UUID envelopeId, @Valid @RequestBody Envelope envelopeRequest,
       HttpServletRequest request) {
     final Request req = Auth.decodeRequest(request);
-    req.check();
+    req.check(sessionRepository);
 
     return envelopeRepository.findById(envelopeId).map(envelope -> {
       Boolean isChanged = false;
@@ -131,7 +119,7 @@ public class EnvelopeController {
   @DeleteMapping("/envelopes/{envelopeId}")
   public ResponseEntity<?> deleteEnvelope(@PathVariable UUID envelopeId, HttpServletRequest request) {
     final Request req = Auth.decodeRequest(request);
-    req.check();
+    req.check(sessionRepository);
 
     return envelopeRepository.findById(envelopeId).map(envelope -> {
       envelopeRepository.delete(envelope);
