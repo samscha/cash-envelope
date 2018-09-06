@@ -1,7 +1,7 @@
 package com.example.cashenvelope.auth;
 
 import java.security.Key;
-import java.util.Date;
+// import java.util.Date;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -22,6 +22,7 @@ public class Session extends AuditModel {
   @Column(name = "id", updatable = false, nullable = false)
   private UUID id;
 
+  @Column(unique = true)
   private String payload;
 
   private static final long serialVersionUID = 42L;
@@ -38,12 +39,10 @@ public class Session extends AuditModel {
     this.payload = payload;
   }
 
-  public String createPayload(String username) {
+  public String createPayload(UUID userId) {
     final Key signingKey = SigningKey.getSigningKey();
 
-    // final String jws = Jwts.builder().setSubject("cashenvelope").claim("user",
-    // username).setIssuedAt(new Date())
-    final String jws = Jwts.builder().setSubject("cashenvelope").claim("user", username).signWith(signingKey).compact();
+    final String jws = Jwts.builder().setSubject("cashenvelope").claim("userId", userId).signWith(signingKey).compact();
 
     this.setPayload(jws);
 
@@ -57,4 +56,16 @@ public class Session extends AuditModel {
   public String getPayload() {
     return this.payload;
   }
+
+  // public void addConnection() {
+  // this.connections += 1;
+  // }
+
+  // public void removeConnection() {
+  // this.connections -= 1;
+  // }
+
+  // public Integer getConnections() {
+  // return this.connections;
+  // }
 }
