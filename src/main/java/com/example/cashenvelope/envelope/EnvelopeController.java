@@ -81,7 +81,7 @@ public class EnvelopeController {
   }
 
   @PutMapping("/envelopes/{envelopeId}")
-  public Envelope updateEnvelope(@PathVariable UUID envelopeId, @Valid @RequestBody Envelope envelopeRequest,
+  public Envelope updateEnvelope(@PathVariable UUID envelopeId, @RequestBody Envelope envelopeRequest,
       HttpServletRequest request) {
     final Request req = Auth.decodeRequest(request);
     req.check(sessionRepository);
