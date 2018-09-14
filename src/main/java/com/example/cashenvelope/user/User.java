@@ -27,6 +27,7 @@ public class User extends AuditModel {
   private UUID id;
 
   @NotBlank
+  @Column(unique = true)
   @Size(min = 7, max = 32)
   private String username;
 

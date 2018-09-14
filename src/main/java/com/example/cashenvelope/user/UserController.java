@@ -42,6 +42,19 @@ public class UserController {
 
   @PostMapping("/users")
   public User createUser(@Valid @RequestBody User user) {
+    /**
+     * check if username exists already
+     * 
+     * db enforcement also exists but we can check here before db check happens and
+     * use db check as last resort
+     * 
+     */
+    final User foundUser = userRepository.findByUsername(user.getUsername());
+
+    if (foundUser != null) {
+      throw new UnprocessableEntityException("Username with " + foundUser.getUsername() + " already exists");
+    }
+
     return userRepository.save(user);
   }
 
