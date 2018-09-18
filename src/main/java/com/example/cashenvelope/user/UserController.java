@@ -90,6 +90,8 @@ public class UserController {
 
     final UUID userId = req.getUserId();
 
+    sessionRepository.delete(sessionRepository.findByPayload(req.getToken()));
+
     return userRepository.findById(userId).map(user -> {
       userRepository.delete(user);
 
