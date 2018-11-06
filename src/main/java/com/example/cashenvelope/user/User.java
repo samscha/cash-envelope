@@ -1,6 +1,7 @@
 package com.example.cashenvelope.user;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,21 +38,18 @@ public class User {
   private LocalDateTime updated_at;
 
   public User() {
+    this.setId();
+    this.setCreated_at();
   }
 
-  public User(String username, String password) {
-    this.username = username;
-    this.password = BCrypt.hashpw(password, BCrypt.gensalt(Integer.parseInt(System.getenv("SALT"))));
+  private void setId() {
+    this.id = UUID.randomUUID().toString();
   }
 
-  public User(String id, String username, String password) {
-    this.id = id;
-    this.username = username;
-    this.password = BCrypt.hashpw(password, BCrypt.gensalt(Integer.parseInt(System.getenv("SALT"))));
-  }
-
-  public void setId(String id) {
-    this.id = id;
+  private void setCreated_at() {
+    final LocalDateTime now = LocalDateTime.now();
+    this.created_at = now;
+    this.updated_at = now;
   }
 
   public void setUsername(String username) {
@@ -60,6 +58,20 @@ public class User {
 
   public void setPassword(String password) {
     this.password = BCrypt.hashpw(password, BCrypt.gensalt(Integer.parseInt(System.getenv("SALT"))));
+  }
+
+  public void setUpdated_at() {
+    this.updated_at = LocalDateTime.now();
+  }
+
+  public void changeUsername(String username) {
+    this.username = username;
+    this.setUpdated_at();
+  }
+
+  public void changePassword(String password) {
+    this.password = BCrypt.hashpw(password, BCrypt.gensalt(Integer.parseInt(System.getenv("SALT"))));
+    this.setUpdated_at();
   }
 
   public String getId() {
@@ -82,16 +94,8 @@ public class User {
     return this.created_at;
   }
 
-  public void setCreated_at() {
-    this.created_at = LocalDateTime.now();
-  }
-
   public LocalDateTime getUpdated_at() {
     return this.updated_at;
-  }
-
-  public void setUpdated_at() {
-    this.updated_at = LocalDateTime.now();
   }
 
   @Override

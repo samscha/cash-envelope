@@ -62,10 +62,6 @@ public class UserController {
       throw new UnprocessableEntityException("Username with " + foundUser.getUsername() + " already exists");
     }
 
-    user.setId(UUID.randomUUID().toString().replace("-", ""));
-    user.setCreated_at();
-    user.setUpdated_at();
-
     /**
      * INSERT returns number of rows affected
      */
