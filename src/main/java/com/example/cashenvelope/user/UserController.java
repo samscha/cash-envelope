@@ -1,6 +1,5 @@
 package com.example.cashenvelope.user;
 
-import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,18 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserController {
 
-  // @Autowired
-  // private UserRepository userRepository;
   @Autowired
   private SessionRepository sessionRepository;
 
   @Autowired
   private UserMapper userRepository;
-
-  @GetMapping("/users")
-  public List<User> getUsers(HttpServletRequest request) {
-    return userRepository.findUsers();
-  }
 
   @GetMapping("/user")
   public User getUser(HttpServletRequest request) {
@@ -76,7 +68,7 @@ public class UserController {
     /**
      * another SELECT required to get newly saved user
      *
-     * it's possible to just return `user` as it has the same info except with the
+     * it's possible to just return `user` as it has the same info with the
      * exception of the timestamp, which is rounded to the nearest second. In other
      * words, the ms is truncated / rounded (e.g. below):
      *
