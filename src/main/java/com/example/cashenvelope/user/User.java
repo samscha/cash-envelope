@@ -1,30 +1,25 @@
 package com.example.cashenvelope.user;
 
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import com.example.cashenvelope.audit.AuditModel;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 @Entity
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @Table(name = "\"users\"")
-public class User extends AuditModel {
+public class User {
   @Id
-  @GeneratedValue(generator = "UUID")
-  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-  @Column(name = "user_id", updatable = false, nullable = false)
-  private UUID id;
+  @Column(name = "id", updatable = false, nullable = false)
+  private String id;
 
   @NotBlank
   @Column(unique = true)
@@ -35,7 +30,11 @@ public class User extends AuditModel {
   @Size(min = 8, max = 64)
   private String password;
 
-  private static final long serialVersionUID = 42L;
+  @Column(name = "created_at", nullable = false, updatable = false)
+  private LocalDateTime created_at;
+
+  @Column(name = "updated_at", nullable = false)
+  private LocalDateTime updated_at;
 
   public User() {
   }
@@ -45,13 +44,13 @@ public class User extends AuditModel {
     this.password = BCrypt.hashpw(password, BCrypt.gensalt(Integer.parseInt(System.getenv("SALT"))));
   }
 
-  public User(UUID id, String username, String password) {
+  public User(String id, String username, String password) {
     this.id = id;
     this.username = username;
     this.password = BCrypt.hashpw(password, BCrypt.gensalt(Integer.parseInt(System.getenv("SALT"))));
   }
 
-  public void setId(UUID id) {
+  public void setId(String id) {
     this.id = id;
   }
 
@@ -63,7 +62,7 @@ public class User extends AuditModel {
     this.password = BCrypt.hashpw(password, BCrypt.gensalt(Integer.parseInt(System.getenv("SALT"))));
   }
 
-  public UUID getId() {
+  public String getId() {
     return this.id;
   }
 
@@ -79,8 +78,25 @@ public class User extends AuditModel {
     return BCrypt.checkpw(password, this.password);
   }
 
+  public LocalDateTime getCreated_at() {
+    return this.created_at;
+  }
+
+  public void setCreated_at() {
+    this.created_at = LocalDateTime.now();
+  }
+
+  public LocalDateTime getUpdated_at() {
+    return this.updated_at;
+  }
+
+  public void setUpdated_at() {
+    this.updated_at = LocalDateTime.now();
+  }
+
   @Override
   public String toString() {
-    return "User: {" + "id=" + this.id + " username=" + this.username + " password=" + this.password + "}";
+    return "User: {" + "id=" + this.id + " username=" + this.username + " password=" + this.password + " created_at="
+        + this.created_at + " updated_at= " + this.updated_at + "}";
   }
 }
