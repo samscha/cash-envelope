@@ -1,13 +1,14 @@
 package com.example.cashenvelope.user;
 
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 
 import com.example.cashenvelope.auth.Auth;
 import com.example.cashenvelope.auth.SessionRepository;
 import com.example.cashenvelope.exception.InternalServerErrorException;
+import com.example.cashenvelope.exception.UnauthorizedException;
 import com.example.cashenvelope.exception.UnprocessableEntityException;
 import com.example.cashenvelope.request.Request;
 
@@ -33,14 +34,16 @@ public class UserController {
 
     final UUID userId = req.getUserId();
 
-    return userRepository.findById(userId.toString());
-    // .map(user -> {
-    // return user;
-    // }).orElseThrow(() -> new UnprocessableEntityException("User not found"));
+    User user = userRepository.findById(userId.toString());
+
+    if (user == null)
+      throw new UnauthorizedException("Authentication error. Please log in.");
+
+    return user;
   }
 
   @PostMapping("/users")
-  public User createUser(@Valid @RequestBody User user) {
+  public User createUser(@RequestBody Map<String, String> body) {
     /**
      * check if username exists already
      * 
@@ -48,11 +51,16 @@ public class UserController {
      * use db check as last resort
      * 
      */
-    final User foundUser = userRepository.findByUsername(user.getUsername());
+    final String username = body.get("username");
+    final String password = body.get("password");
+
+    final User foundUser = userRepository.findByUsername(username);
 
     if (foundUser != null) {
       throw new UnprocessableEntityException("Username with " + foundUser.getUsername() + " already exists");
     }
+
+    final User user = new User(username, password);
 
     /**
      * INSERT returns number of rows affected
@@ -76,7 +84,7 @@ public class UserController {
      * userRepository.findById(user.getId()) -> 14:05:23
      *
      */
-    final User savedUser = userRepository.findById(user.getId());
+    final User savedUser = userRepository.findByUsername(username);
 
     if (savedUser == null)
       throw new InternalServerErrorException("Error retrieving saved user");

@@ -38,8 +38,13 @@ public class User {
   private LocalDateTime updated_at;
 
   public User() {
+  }
+
+  public User(String username, String password) {
     this.setId();
     this.setCreated_at();
+    this.username = username;
+    this.password = BCrypt.hashpw(password, BCrypt.gensalt(Integer.parseInt(System.getenv("SALT"))));
   }
 
   private void setId() {
@@ -54,24 +59,16 @@ public class User {
 
   public void setUsername(String username) {
     this.username = username;
+    this.setUpdated_at();
   }
 
   public void setPassword(String password) {
     this.password = BCrypt.hashpw(password, BCrypt.gensalt(Integer.parseInt(System.getenv("SALT"))));
+    this.setUpdated_at();
   }
 
   public void setUpdated_at() {
     this.updated_at = LocalDateTime.now();
-  }
-
-  public void changeUsername(String username) {
-    this.username = username;
-    this.setUpdated_at();
-  }
-
-  public void changePassword(String password) {
-    this.password = BCrypt.hashpw(password, BCrypt.gensalt(Integer.parseInt(System.getenv("SALT"))));
-    this.setUpdated_at();
   }
 
   public String getId() {
