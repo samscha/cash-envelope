@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import com.example.cashenvelope.auth.Auth;
 import com.example.cashenvelope.auth.SessionMapper;
@@ -51,7 +52,7 @@ public class UserController {
   }
 
   @PostMapping("/users")
-  public User createUser(@RequestBody Map<String, String> body) {
+  public User createUser(@Valid @RequestBody User body) {
     /**
      * check if username exists already
      * 
@@ -59,8 +60,7 @@ public class UserController {
      * use db check as last resort
      * 
      */
-    final String username = body.get("username");
-    final String password = body.get("password");
+    final String username = body.getUsername();
 
     final User foundUser = userRepository.findByUsername(username);
 
@@ -68,7 +68,7 @@ public class UserController {
       throw new UnprocessableEntityException("Username with " + foundUser.getUsername() + " already exists");
     }
 
-    final User user = new User(username, password);
+    final User user = new User(body.getUsername(), body.getPassword());
 
     /**
      * INSERT returns number of rows affected
@@ -106,7 +106,7 @@ public class UserController {
   // final Request req = Auth.decodeRequest(request);
   // req.check(sessionRepository);
 
-  // final UUID userId = req.getUserId();
+  // final String userId = req.getUserId();
 
   // return userRepository.findById(userId.toString()).map(user -> {
   // Boolean isChanged = false;
