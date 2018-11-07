@@ -11,6 +11,7 @@ import javax.validation.Valid;
 
 import com.example.cashenvelope.auth.Auth;
 import com.example.cashenvelope.auth.SessionMapper;
+import com.example.cashenvelope.envelope.EnvelopeMapper;
 import com.example.cashenvelope.exception.InternalServerErrorException;
 import com.example.cashenvelope.exception.UnauthorizedException;
 import com.example.cashenvelope.exception.UnprocessableEntityException;
@@ -35,6 +36,9 @@ public class UserController {
 
   @Autowired
   private UserMapper userRepository;
+
+  @Autowired
+  private EnvelopeMapper envelopeRepository;
 
   @GetMapping("/user")
   public User getUser(HttpServletRequest request) {
@@ -162,6 +166,8 @@ public class UserController {
 
     if (rows > 1)
       throw new InternalServerErrorException("Error deleting user (>1)");
+
+    envelopeRepository.deleteAll(userId);
 
     /**
      * also delete cookie in response

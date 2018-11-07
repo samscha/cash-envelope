@@ -1,5 +1,7 @@
 package com.example.cashenvelope.envelope;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -12,6 +14,7 @@ import com.example.cashenvelope.user.User;
 import com.example.cashenvelope.user.UserMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,18 +31,18 @@ public class EnvelopeController {
     @Autowired
     private SessionMapper sessionRepository;
 
-    // @GetMapping("/envelopes")
-    // public List<Envelope> getEnvelopes(HttpServletRequest request) {
-    // /**
-    // * this is the decoded request body
-    // *
-    // * similar to `req` in Express/Node (or res.locals)
-    // */
-    // final Request req = Auth.decodeRequest(request);
-    // req.check(sessionRepository);
+    @GetMapping("/envelopes")
+    public List<Envelope> getEnvelopes(HttpServletRequest request) {
+        /**
+         * this is the decoded request body
+         *
+         * similar to `req` in Express/Node (or res.locals)
+         */
+        final Request req = Auth.decodeRequest(request);
+        req.check(sessionRepository);
 
-    // return envelopeRepository.findByUserId(req.getUserId());
-    // }
+        return envelopeRepository.findByUserId(req.getUserId());
+    }
 
     // @GetMapping("/envelopes/{envelopeId}")
     // public Envelope getEnvelope(@PathVariable UUID envelopeId, HttpServletRequest

@@ -29,8 +29,6 @@ public class Envelope extends Base {
 
   private String owner_id;
 
-  // private static final long serialVersionUID = 42L;
-
   public Envelope() {
     super();
   }
@@ -43,16 +41,6 @@ public class Envelope extends Base {
     this.notes = notes;
     this.owner_id = owner_id;
   }
-
-  // public Envelope(UUID env_id, String name, Double value, String notes, User
-  // user)
-  // {
-  // this.env_id = env_id;
-  // this.name = name;
-  // this.value = value;
-  // this.notes = notes;
-  // this.user = user;
-  // }
 
   public void changeName(String name) {
     this.name = name;
