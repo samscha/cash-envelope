@@ -2,7 +2,6 @@ package com.example.cashenvelope.user;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.Cookie;
@@ -24,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -100,32 +100,46 @@ public class UserController {
     return savedUser;
   }
 
-  // @PutMapping("/user")
-  // public User updateUser(@Valid @RequestBody User userRequest,
-  // HttpServletRequest request) {
-  // final Request req = Auth.decodeRequest(request);
-  // req.check(sessionRepository);
+  @PutMapping("/user")
+  public User updateUser(@Valid @RequestBody User userRequest, HttpServletRequest request) {
+    final Request req = Auth.decodeRequest(request);
+    req.check(sessionRepository);
 
-  // final String userId = req.getUserId();
+    final String userId = req.getUserId();
 
-  // return userRepository.findById(userId.toString()).map(user -> {
-  // Boolean isChanged = false;
+    final User user = userRepository.findById(userId);
 
-  // String username = userRequest.getUsername();
+    if (user == null)
+      throw new UnauthorizedException("Authentication error. Please log in.");
 
-  // if (username != null && !user.getUsername().equals(username)) {
-  // user.setUsername(username);
-  // isChanged = true;
-  // }
+    Boolean isChanged = false;
 
-  // if (!isChanged) {
-  // throw new UnprocessableEntityException("No changes detected");
-  // }
+    final String username = userRequest.getUsername();
 
-  // return userRepository.save(user);
-  // }).orElseThrow(() -> new ResourceNotFoundException("User not found with id: "
-  // + userId));
-  // }
+    if (username != null && !user.getUsername().equals(username)) {
+      user.changeUsername(username);
+      isChanged = true;
+    }
+
+    if (!isChanged) {
+      throw new UnprocessableEntityException("No changes detected");
+    }
+
+    final int rows = userRepository.update(user);
+
+    if (rows < 1)
+      throw new InternalServerErrorException("Error updating user");
+
+    if (rows > 1)
+      throw new InternalServerErrorException("Error updating user (>1)");
+
+    final User updatedUser = userRepository.findByUsername(username);
+
+    if (updatedUser == null)
+      throw new InternalServerErrorException("Error retrieving updated user");
+
+    return updatedUser;
+  }
 
   @DeleteMapping("/user")
   public ResponseEntity<?> deleteUser(HttpServletRequest request, HttpServletResponse response) {
