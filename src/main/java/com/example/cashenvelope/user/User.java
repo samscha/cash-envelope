@@ -50,7 +50,6 @@ public class User extends Base {
   public void changePassword(String password) {
     this.password = BCrypt.hashpw(password, BCrypt.gensalt(Integer.parseInt(System.getenv("SALT"))));
     this.updateTimestamp();
-    ;
   }
 
   public String getId() {
