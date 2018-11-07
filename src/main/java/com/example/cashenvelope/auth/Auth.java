@@ -3,7 +3,6 @@ package com.example.cashenvelope.auth;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.UUID;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -68,7 +67,7 @@ public class Auth {
         throw new UnauthorizedException("Session expired. Please log in");
       }
 
-      req.setUserId(UUID.fromString(userId.toString()));
+      req.setUserId(userId.toString());
 
       req.authenticate();
 

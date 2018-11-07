@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.example.cashenvelope.exception.UnauthorizedException;
 import com.example.cashenvelope.exception.UnprocessableEntityException;
 import com.example.cashenvelope.user.User;
-import com.example.cashenvelope.user.UserRepository;
+import com.example.cashenvelope.user.UserMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -27,10 +27,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class SessionController {
   @Autowired
-  private SessionRepository sessionRepository;
+  private SessionMapper sessionRepository;
 
   @Autowired
-  private UserRepository userRepository;
+  private UserMapper userRepository;
 
   @PostMapping("/login")
   public ResponseEntity<String> login(@RequestBody Map<String, String> body, HttpServletRequest request,
@@ -60,7 +60,7 @@ public class SessionController {
          * if session is not null, delete session
          */
         if (foundSession != null) {
-          sessionRepository.delete(foundSession);
+          sessionRepository.delete(foundSession.getId());
         }
       }
     }
@@ -151,7 +151,7 @@ public class SessionController {
     Session foundSession = sessionRepository.findByPayload(token.get());
 
     if (foundSession != null) {
-      sessionRepository.delete(foundSession);
+      sessionRepository.delete(foundSession.getId());
     }
 
     List<Cookie> cookies = Arrays.stream(request.getCookies()).filter(c -> cookieKey.equals(c.getName()))

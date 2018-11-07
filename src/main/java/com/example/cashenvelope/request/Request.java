@@ -1,24 +1,22 @@
 
 package com.example.cashenvelope.request;
 
-import java.util.UUID;
-
 import com.example.cashenvelope.auth.Session;
-import com.example.cashenvelope.auth.SessionRepository;
+import com.example.cashenvelope.auth.SessionMapper;
 import com.example.cashenvelope.exception.UnauthorizedException;
 
 /**
  * this class is like `req` or `res.locals` in Express/Node
  */
 public class Request {
-  private UUID userId;
+  private String userId;
   private String token;
   private Boolean authentic;
 
   public Request() {
   }
 
-  public void setUserId(UUID userId) {
+  public void setUserId(String userId) {
     this.userId = userId;
   }
 
@@ -30,7 +28,7 @@ public class Request {
     this.authentic = true;
   }
 
-  public UUID getUserId() {
+  public String getUserId() {
     return this.userId;
   }
 
@@ -38,7 +36,7 @@ public class Request {
     return this.token;
   }
 
-  public void check(SessionRepository sessionRepository) {
+  public void check(SessionMapper sessionRepository) {
     if (!this.authentic)
       throw new UnauthorizedException("Decode not authenticated");
 

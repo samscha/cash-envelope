@@ -1,18 +1,26 @@
 package com.example.cashenvelope.user;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.example.cashenvelope.auth.Auth;
-import com.example.cashenvelope.auth.SessionRepository;
+import com.example.cashenvelope.auth.SessionMapper;
 import com.example.cashenvelope.exception.InternalServerErrorException;
 import com.example.cashenvelope.exception.UnauthorizedException;
 import com.example.cashenvelope.exception.UnprocessableEntityException;
 import com.example.cashenvelope.request.Request;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
   @Autowired
-  private SessionRepository sessionRepository;
+  private SessionMapper sessionRepository;
 
   @Autowired
   private UserMapper userRepository;
@@ -32,9 +40,9 @@ public class UserController {
     final Request req = Auth.decodeRequest(request);
     req.check(sessionRepository);
 
-    final UUID userId = req.getUserId();
+    final String userId = req.getUserId();
 
-    User user = userRepository.findById(userId.toString());
+    User user = userRepository.findById(userId);
 
     if (user == null)
       throw new UnauthorizedException("Authentication error. Please log in.");
@@ -119,20 +127,46 @@ public class UserController {
   // + userId));
   // }
 
-  // @DeleteMapping("/user")
-  // public ResponseEntity<?> deleteUser(HttpServletRequest request) {
-  // final Request req = Auth.decodeRequest(request);
-  // req.check(sessionRepository);
+  @DeleteMapping("/user")
+  public ResponseEntity<?> deleteUser(HttpServletRequest request, HttpServletResponse response) {
+    final Request req = Auth.decodeRequest(request);
+    req.check(sessionRepository);
 
-  // final UUID userId = req.getUserId();
+    final String userId = req.getUserId();
 
-  // sessionRepository.delete(sessionRepository.findByPayload(req.getToken()));
+    sessionRepository.delete(sessionRepository.findByPayload(req.getToken()).getId());
 
-  // return userRepository.findById(userId).map(user -> {
-  // userRepository.delete(user);
+    final User user = userRepository.findById(userId);
 
-  // return ResponseEntity.ok().build();
-  // }).orElseThrow(() -> new ResourceNotFoundException("User not found with id: "
-  // + userId));
-  // }
+    if (user == null)
+      throw new UnauthorizedException("Authentication failed. Please log in");
+
+    final int rows = userRepository.delete(user.getId());
+
+    if (rows < 1)
+      throw new InternalServerErrorException("Error deleting user");
+
+    if (rows > 1)
+      throw new InternalServerErrorException("Error deleting user (>1)");
+
+    /**
+     * also delete cookie in response
+     */
+    String cookieKey = System.getenv("COOKIE_KEY");
+
+    List<Cookie> cookies = Arrays.stream(request.getCookies()).filter(c -> cookieKey.equals(c.getName()))
+        .collect(Collectors.toList());
+
+    /**
+     * there should only be one cookie
+     */
+    cookies.forEach(cookie -> {
+      cookie.setMaxAge(0);
+      response.addCookie(cookie);
+    });
+
+    HttpHeaders responseHeaders = new HttpHeaders();
+
+    return new ResponseEntity<String>("", responseHeaders, HttpStatus.OK);
+  }
 }

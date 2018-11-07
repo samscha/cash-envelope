@@ -22,6 +22,6 @@ public interface UserMapper {
     @Insert("INSERT INTO users (id, username, password, created_at, updated_at) VALUES (#{id}, #{username}, #{password}, #{created_at}, #{updated_at})")
     int save(User user);
 
-    @Delete("DELETE FROM users (user_id) values(${id})")
-    void delete(User user);
+    @Delete("DELETE FROM users WHERE id = #{id}")
+    int delete(@Param("id") String id);
 }

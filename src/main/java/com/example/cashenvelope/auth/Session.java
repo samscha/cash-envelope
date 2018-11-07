@@ -5,11 +5,10 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.example.cashenvelope.audit.AuditModel;
+import com.example.cashenvelope.baseClass.Base;
 
 import io.jsonwebtoken.Jwts;
 
@@ -18,11 +17,10 @@ import io.jsonwebtoken.Jwts;
  */
 @Entity
 @Table(name = "sessions")
-public class Session extends AuditModel {
+public class Session extends Base {
   @Id
-  @GeneratedValue(generator = "UUID")
   @Column(name = "id", updatable = false, nullable = false)
-  private UUID id;
+  private String id;
 
   /**
    * the payload in each session is the String jws sent as cookie in response
@@ -34,21 +32,26 @@ public class Session extends AuditModel {
   @Column(unique = true)
   private String payload;
 
-  private static final long serialVersionUID = 42L;
-
   public Session() {
+    super();
+
+    this.id = UUID.randomUUID().toString();
   }
 
-  public Session(String payload) {
+  private void setPayload(String payload) {
     this.payload = payload;
-  }
+  };
 
-  public Session(UUID id, String payload) {
-    this.id = id;
-    this.payload = payload;
-  }
+  // public Session(String payload) {
+  // this.payload = payload;
+  // }
 
-  public String createPayload(UUID userId) {
+  // public Session(UUID id, String payload) {
+  // this.id = id;
+  // this.payload = payload;
+  // }
+
+  public String createPayload(String userId) {
     final Key signingKey = SigningKey.getSigningKey();
 
     final String jws = Jwts.builder().setSubject("cashenvelope").claim("userId", userId).signWith(signingKey).compact();
@@ -58,11 +61,17 @@ public class Session extends AuditModel {
     return jws;
   }
 
-  public void setPayload(String payload) {
-    this.payload = payload;
+  public String getId() {
+    return this.id;
   }
 
   public String getPayload() {
     return this.payload;
+  }
+
+  @Override
+  public String toString() {
+    return "Session: {" + "id=" + this.id + " payload=" + this.payload + " created_at=" + this.getCreatedAt()
+        + " updated_at= " + this.getUpdatedAt() + "}";
   }
 }
