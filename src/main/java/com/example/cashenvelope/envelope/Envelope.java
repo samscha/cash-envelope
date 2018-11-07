@@ -4,31 +4,19 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import com.example.cashenvelope.audit.AuditModel;
-import com.example.cashenvelope.user.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import com.example.cashenvelope.baseClass.Base;
 
 @Entity
 @Table(name = "envelopes")
-public class Envelope extends AuditModel {
+public class Envelope extends Base {
   @Id
-  @GeneratedValue(generator = "UUID")
-  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-  @Column(name = "id", updatable = false, nullable = false)
-  private UUID id;
+  @Column(name = "env_id", updatable = false, nullable = false)
+  private String env_id;
 
   @NotBlank
   @Size(min = 2, max = 100)
@@ -39,54 +27,50 @@ public class Envelope extends AuditModel {
   @Size(max = 1000)
   private String notes;
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "user_id", nullable = false)
-  @OnDelete(action = OnDeleteAction.CASCADE)
-  @JsonIgnore
-  private User user;
+  private String owner_id;
 
-  private static final long serialVersionUID = 42L;
+  // private static final long serialVersionUID = 42L;
 
   public Envelope() {
+    super();
   }
 
-  public Envelope(String name, Double value, String notes, User user) {
+  public Envelope(String name, Double value, String notes, String owner_id) {
+    this.env_id = UUID.randomUUID().toString();
+
     this.name = name;
     this.value = value;
     this.notes = notes;
-    this.user = user;
+    this.owner_id = owner_id;
   }
 
-  public Envelope(UUID id, String name, Double value, String notes, User user) {
-    this.id = id;
+  // public Envelope(UUID env_id, String name, Double value, String notes, User
+  // user)
+  // {
+  // this.env_id = env_id;
+  // this.name = name;
+  // this.value = value;
+  // this.notes = notes;
+  // this.user = user;
+  // }
+
+  public void changeName(String name) {
     this.name = name;
+    this.updateTimestamp();
+  }
+
+  public void changeValue(Double value) {
     this.value = value;
+    this.updateTimestamp();
+  }
+
+  public void changeNotes(String notes) {
     this.notes = notes;
-    this.user = user;
+    this.updateTimestamp();
   }
 
-  public void setId(UUID id) {
-    this.id = id;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public void setValue(Double value) {
-    this.value = value;
-  }
-
-  public void setNotes(String notes) {
-    this.notes = notes;
-  }
-
-  public void setOwner(User user) {
-    this.user = user;
-  }
-
-  public UUID getId() {
-    return this.id;
+  public String getId() {
+    return this.env_id;
   }
 
   public String getName() {
@@ -101,13 +85,13 @@ public class Envelope extends AuditModel {
     return this.notes;
   }
 
-  public User getOwner() {
-    return this.user;
+  public String getOwnerId() {
+    return this.owner_id;
   }
 
   @Override
   public String toString() {
-    return "Envelope: {" + "id=" + this.id + " name=" + this.name + " value=" + this.value + " notes=" + this.notes
-        + " user=" + this.user + "}";
+    return "Envelope: {" + "env_id=" + this.env_id + " name=" + this.name + " value=" + this.value + " notes="
+        + this.notes + " ownerId=" + this.owner_id + "}";
   }
 }
