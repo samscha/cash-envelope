@@ -15,6 +15,8 @@ import com.example.cashenvelope.user.User;
 import com.example.cashenvelope.user.UserMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -141,17 +143,19 @@ public class EnvelopeController {
     // id: " + envelopeId));
     // }
 
-    // @DeleteMapping("/envelopes/{envelopeId}")
-    // public ResponseEntity<?> deleteEnvelope(@PathVariable UUID envelopeId,
-    // HttpServletRequest request) {
-    // final Request req = Auth.decodeRequest(request);
-    // req.check(sessionRepository);
+    @DeleteMapping("/envelopes/{envelopeId}")
+    public ResponseEntity<?> deleteEnvelope(@PathVariable String envelopeId, HttpServletRequest request) {
+        final Request req = Auth.decodeRequest(request);
+        req.check(sessionRepository);
 
-    // return envelopeRepository.findById(envelopeId).map(envelope -> {
-    // envelopeRepository.delete(envelope);
+        final int rows = envelopeRepository.delete(envelopeId);
 
-    // return ResponseEntity.ok().build();
-    // }).orElseThrow(() -> new ResourceNotFoundException("Envelope not found with
-    // id: " + envelopeId));
-    // }
+        if (rows < 1)
+            throw new InternalServerErrorException("Error deleting envelope");
+
+        if (rows > 1)
+            throw new InternalServerErrorException("Error deleting envelope (>1)");
+
+        return ResponseEntity.ok().build();
+    }
 }

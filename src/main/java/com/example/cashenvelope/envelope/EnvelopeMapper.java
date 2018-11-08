@@ -19,6 +19,9 @@ public interface EnvelopeMapper {
     @Insert("INSERT INTO envelopes (env_id, name, value, notes, owner_id, created_at, updated_at) VALUES (#{id}, #{name}, #{value}, #{notes}, #{ownerId}, #{created_at}, #{updated_at})")
     int save(Envelope envelope);
 
+    @Delete("DELETE FROM envelopes WHERE env_id = #{id}")
+    int delete(@Param("id") String id);
+
     @Delete("DELETE FROM envelopes WHERE owner_id = #{id}")
     void deleteAll(@Param("id") String id);
 }
