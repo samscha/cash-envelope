@@ -6,7 +6,8 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;;
 
 @Mapper
 public interface EnvelopeMapper {
@@ -18,6 +19,9 @@ public interface EnvelopeMapper {
 
     @Insert("INSERT INTO envelopes (env_id, name, value, notes, owner_id, created_at, updated_at) VALUES (#{id}, #{name}, #{value}, #{notes}, #{ownerId}, #{created_at}, #{updated_at})")
     int save(Envelope envelope);
+
+    @Update("UPDATE envelopes SET name=#{name}, value=#{value}, notes=#{notes}, updated_at=#{updated_at} WHERE env_id=#{id}")
+    int update(Envelope envelope);
 
     @Delete("DELETE FROM envelopes WHERE env_id = #{id}")
     int delete(@Param("id") String id);

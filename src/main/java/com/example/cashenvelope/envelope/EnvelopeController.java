@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -105,43 +106,57 @@ public class EnvelopeController {
         return savedEnvelope;
     }
 
-    // @PutMapping("/envelopes/{envelopeId}")
-    // public Envelope updateEnvelope(@PathVariable UUID envelopeId, @RequestBody
-    // Envelope envelopeRequest,
-    // HttpServletRequest request) {
-    // final Request req = Auth.decodeRequest(request);
-    // req.check(sessionRepository);
+    @PutMapping("/envelopes/{envelopeId}")
+    public Envelope updateEnvelope(@PathVariable String envelopeId, @RequestBody Envelope envelopeRequest,
+            HttpServletRequest request) {
+        final Request req = Auth.decodeRequest(request);
+        req.check(sessionRepository);
 
-    // return envelopeRepository.findById(envelopeId).map(envelope -> {
-    // Boolean isChanged = false;
+        final Envelope envelope = envelopeRepository.findById(envelopeId);
 
-    // String name = envelopeRequest.getName();
-    // Double value = envelopeRequest.getValue();
-    // String notes = envelopeRequest.getNotes();
+        if (envelope == null)
+            throw new UnprocessableEntityException("No envelope with id (" + envelopeId + ") found");
 
-    // if (name != null && !envelope.getName().equals(name)) {
-    // envelope.setName(name);
-    // isChanged = true;
-    // }
+        Boolean isChanged = false;
 
-    // if (value != null && !envelope.getValue().equals(value)) {
-    // envelope.setValue(value);
-    // isChanged = true;
-    // }
+        String name = envelopeRequest.getName();
+        Double value = envelopeRequest.getValue();
+        String notes = envelopeRequest.getNotes();
 
-    // if (notes != null && !envelope.getNotes().equals(notes)) {
-    // envelope.setNotes(notes);
-    // isChanged = true;
-    // }
+        if (name != null && !envelope.getName().equals(name)) {
+            envelope.changeName(name);
+            isChanged = true;
+        }
 
-    // if (!isChanged) {
-    // throw new UnprocessableEntityException("No changes detected");
-    // }
+        if (value != null && !envelope.getValue().equals(value)) {
+            envelope.changeValue(value);
+            isChanged = true;
+        }
 
-    // return envelopeRepository.save(envelope);
-    // }).orElseThrow(() -> new ResourceNotFoundException("Envelope not found with
-    // id: " + envelopeId));
-    // }
+        if (notes != null && !envelope.getNotes().equals(notes)) {
+            envelope.changeNotes(notes);
+            isChanged = true;
+        }
+
+        if (!isChanged) {
+            throw new UnprocessableEntityException("No changes detected");
+        }
+
+        final int rows = envelopeRepository.update(envelope);
+
+        if (rows < 1)
+            throw new InternalServerErrorException("Error updating envelope");
+
+        if (rows > 1)
+            throw new InternalServerErrorException("Error updating envelope (>1)");
+
+        final Envelope updatedEnvelope = envelopeRepository.findById(envelope.getId());
+
+        if (updatedEnvelope == null)
+            throw new InternalServerErrorException("Error retrieving updated envelope");
+
+        return updatedEnvelope;
+    }
 
     @DeleteMapping("/envelopes/{envelopeId}")
     public ResponseEntity<?> deleteEnvelope(@PathVariable String envelopeId, HttpServletRequest request) {
