@@ -17,6 +17,9 @@ public interface EnvelopeMapper {
     @Select("SELECT * FROM envelopes WHERE owner_id = #{id}")
     List<Envelope> findByUserId(@Param("id") String id);
 
+    @Select("SELECT * FROM envelopes WHERE name LIKE #{name} OR notes LIKE #{notes}")
+    List<Envelope> search(@Param("name") String name, @Param("notes") String notes);
+
     @Insert("INSERT INTO envelopes (env_id, name, value, notes, owner_id, created_at, updated_at) VALUES (#{id}, #{name}, #{value}, #{notes}, #{ownerId}, #{created_at}, #{updated_at})")
     int save(Envelope envelope);
 

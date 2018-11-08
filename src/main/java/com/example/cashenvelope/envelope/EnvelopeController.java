@@ -1,6 +1,7 @@
 package com.example.cashenvelope.envelope;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -62,18 +63,16 @@ public class EnvelopeController {
         return envelope;
     }
 
-    // @PostMapping("/envelopes/search")
-    // public List<Envelope> searchEnvelopes(@RequestBody Map<String, String> body,
-    // HttpServletRequest request) {
-    // final Request req = Auth.decodeRequest(request);
-    // req.check(sessionRepository);
+    @PostMapping("/envelopes/search")
+    public List<Envelope> searchEnvelopes(@RequestBody Map<String, String> body, HttpServletRequest request) {
+        final Request req = Auth.decodeRequest(request);
+        req.check(sessionRepository);
 
-    // String queryName = body.get("name");
-    // String queryNotes = body.get("notes");
+        String queryName = body.get("name");
+        String queryNotes = body.get("notes");
 
-    // return envelopeRepository.findByNameContainingOrNotesContaining(queryName,
-    // queryNotes);
-    // }
+        return envelopeRepository.search("%" + queryName + "%", "%" + queryNotes + "%");
+    }
 
     @PostMapping("/envelopes")
     public Envelope createEnvelope(@Valid @RequestBody Envelope body, HttpServletRequest request) {
