@@ -9,12 +9,14 @@ import com.example.cashenvelope.auth.Auth;
 import com.example.cashenvelope.auth.SessionMapper;
 import com.example.cashenvelope.exception.InternalServerErrorException;
 import com.example.cashenvelope.exception.UnauthorizedException;
+import com.example.cashenvelope.exception.UnprocessableEntityException;
 import com.example.cashenvelope.request.Request;
 import com.example.cashenvelope.user.User;
 import com.example.cashenvelope.user.UserMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,14 +46,18 @@ public class EnvelopeController {
         return envelopeRepository.findByUserId(req.getUserId());
     }
 
-    // @GetMapping("/envelopes/{envelopeId}")
-    // public Envelope getEnvelope(@PathVariable UUID envelopeId, HttpServletRequest
-    // request) {
-    // final Request req = Auth.decodeRequest(request);
-    // req.check(sessionRepository);
+    @GetMapping("/envelopes/{envelopeId}")
+    public Envelope getEnvelope(@PathVariable String envelopeId, HttpServletRequest request) {
+        final Request req = Auth.decodeRequest(request);
+        req.check(sessionRepository);
 
-    // return envelopeRepository.findById(envelopeId).get();
-    // }
+        final Envelope envelope = envelopeRepository.findById(envelopeId);
+
+        if (envelope == null)
+            throw new UnprocessableEntityException("No envelope with id (" + envelopeId + ") found");
+
+        return envelope;
+    }
 
     // @PostMapping("/envelopes/search")
     // public List<Envelope> searchEnvelopes(@RequestBody Map<String, String> body,
