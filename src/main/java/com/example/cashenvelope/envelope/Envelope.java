@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.example.cashenvelope.baseClass.Base;
@@ -22,6 +23,7 @@ public class Envelope extends Base {
   @Size(min = 2, max = 100)
   private String name;
 
+  @NotNull
   private Double value;
 
   @Size(max = 1000)

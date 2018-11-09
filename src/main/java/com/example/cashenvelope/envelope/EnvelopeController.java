@@ -76,6 +76,14 @@ public class EnvelopeController {
 
     @PostMapping("/envelopes")
     public Envelope createEnvelope(@Valid @RequestBody Envelope body, HttpServletRequest request) {
+        /**
+         * custom currency validation
+         */
+        Double val = Double.valueOf(body.getValue());
+
+        if (!(val >= 0.01))
+            throw new UnprocessableEntityException("Value must be greater than one cent (0.01): " + val + " found");
+
         final Request req = Auth.decodeRequest(request);
         req.check(sessionRepository);
 
