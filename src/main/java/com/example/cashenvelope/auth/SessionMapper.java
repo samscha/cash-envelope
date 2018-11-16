@@ -15,4 +15,13 @@ public interface SessionMapper {
 
     @Delete("DELETE FROM sessions WHERE id = #{id}")
     void delete(String id);
+
+    /**
+     * this should be changed to updated_at instead of created_at when the
+     * SessionController updates instead of deleting foundSession (in /login)
+     *
+     * @param date String formatted as date (LocalTimeDate) in UTC (00)
+     */
+    @Delete("DELETE FROM sessions WHERE created_at < #{date}")
+    void clear(String date);
 }

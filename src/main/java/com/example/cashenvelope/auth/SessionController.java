@@ -35,6 +35,11 @@ public class SessionController {
   @PostMapping("/login")
   public ResponseEntity<String> login(@RequestBody Map<String, String> body, HttpServletRequest request,
       HttpServletResponse response) {
+
+    String browser = request.getHeader("User-Agent");
+    String addr = request.getRemoteAddr();
+    String host = request.getRemoteHost();
+
     /**
      * if there are cookies present
      */
@@ -77,7 +82,7 @@ public class SessionController {
     if (user.checkPassword(password)) {
       final Session session = new Session();
 
-      final String jws = session.createPayload(user.getId());
+      final String jws = session.createPayload(user.getId(), browser, addr, host);
 
       final Session foundSession = sessionRepository.findByPayload(session.getPayload());
 

@@ -25,11 +25,10 @@ public class Session extends Base {
   /**
    * the payload in each session is the String jws sent as cookie in response
    * 
-   * each user session should be UNIQUE (enforceable because only userId is set as
-   * a claim in jwt)
+   * each user session should be UNIQUE
    *
    */
-  @Column(unique = true)
+  @Column(unique = true, length = 500)
   private String payload;
 
   public Session() {
@@ -42,19 +41,11 @@ public class Session extends Base {
     this.payload = payload;
   };
 
-  // public Session(String payload) {
-  // this.payload = payload;
-  // }
-
-  // public Session(UUID id, String payload) {
-  // this.id = id;
-  // this.payload = payload;
-  // }
-
-  public String createPayload(String userId) {
+  public String createPayload(String userId, String browser, String addr, String host) {
     final Key signingKey = SigningKey.getSigningKey();
 
-    final String jws = Jwts.builder().setSubject("cashenvelope").claim("userId", userId).signWith(signingKey).compact();
+    final String jws = Jwts.builder().setSubject("cashenvelope").claim("userId", userId).claim("browser", browser)
+        .claim("addr", addr).claim("host", host).signWith(signingKey).compact();
 
     this.setPayload(jws);
 
