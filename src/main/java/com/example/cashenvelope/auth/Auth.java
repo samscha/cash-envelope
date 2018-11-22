@@ -18,7 +18,7 @@ import io.jsonwebtoken.Jwts;
 public class Auth {
   public static Request decodeRequest(HttpServletRequest request) {
     Request req = new Request();
-    final Boolean DEBUG = System.getenv("DEBUG").length() > 0;
+    final Boolean DEBUG = System.getenv("DEBUG").equals("TRUE");
 
     /**
      * check that there are cookies present in request
