@@ -18,6 +18,8 @@ public class WebConfig implements WebMvcConfigurer {
 
         origins.add(System.getenv("ORIGIN"));
 
-        registry.addMapping("/**").allowedOrigins(origins.toArray(new String[origins.size()])).allowCredentials(true);
+        // registry.addMapping("/**").allowedOrigins(origins.toArray(new
+        // String[origins.size()])).allowCredentials(true);
+        registry.addMapping("/**").allowCredentials(true);
     }
 }
