@@ -105,10 +105,12 @@ public class SessionController {
       response.addCookie(cookie);
 
       HttpHeaders responseHeaders = new HttpHeaders();
-      responseHeaders.add("Access-Control-Allow-Credentials", "true");
+      // responseHeaders.add("Access-Control-Allow-Credentials", "true");
       // responseHeaders.add("Access-Control-Allow-Origin", "*");
-      responseHeaders.add("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS, HEAD");
-      responseHeaders.add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
+      // responseHeaders.add("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT,
+      // OPTIONS, HEAD");
+      // responseHeaders.add("Access-Control-Allow-Headers", "Content-Type, Accept,
+      // X-Requested-With");
 
       return new ResponseEntity<String>("", responseHeaders, HttpStatus.OK);
     } else {
