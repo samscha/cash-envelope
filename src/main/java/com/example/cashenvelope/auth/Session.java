@@ -44,8 +44,10 @@ public class Session extends Base {
   public String createPayload(String userId, String browser, String addr) {
     final Key signingKey = SigningKey.getSigningKey();
 
-    final String jws = Jwts.builder().setSubject("cashenvelope").claim("userId", userId).claim("browser", browser)
-        .claim("addr", addr).signWith(signingKey).compact();
+    final String jws = Jwts.builder().setSubject("cashenvelope").claim("userId", userId).signWith(signingKey).compact();
+)
+    // final String jws = Jwts.builder().setSubject("cashenvelope").claim("userId", userId).claim("browser", browser)
+        // .claim("addr", addr).signWith(signingKey).compact();
 
     this.setPayload(jws);
 
