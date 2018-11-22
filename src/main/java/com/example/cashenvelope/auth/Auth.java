@@ -18,11 +18,15 @@ import io.jsonwebtoken.Jwts;
 public class Auth {
   public static Request decodeRequest(HttpServletRequest request) {
     Request req = new Request();
+    final Boolean DEBUG = System.getenv("DEBUG").length() > 0;
 
     /**
      * check that there are cookies present in request
      */
     if (request.getCookies() == null) {
+      if (DEBUG)
+        System.out.println("request.getCookies() === null");
+
       throw new UnauthorizedException("Session expired. Please log in");
     }
 
@@ -45,6 +49,9 @@ public class Auth {
      * 
      */
     if (token.orElse(null) == null) {
+      if (DEBUG)
+        System.out.println("token.orElse(null) == null");
+
       throw new UnauthorizedException("Session expired. Please log in");
     }
 
@@ -64,6 +71,9 @@ public class Auth {
        * if userId is null, this means there is no claim with userId
        */
       if (userId == null) {
+        if (DEBUG)
+          System.out.println("userId == null");
+
         throw new UnauthorizedException("Session expired. Please log in");
       }
 
@@ -76,6 +86,9 @@ public class Auth {
       /**
        * if jws verification fails, force re-login
        */
+      if (DEBUG)
+        System.out.println("JwtException: " + e);
+
       throw new UnauthorizedException("Session expired. Please log in");
     }
   }
