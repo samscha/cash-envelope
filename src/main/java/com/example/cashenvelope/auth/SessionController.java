@@ -98,19 +98,13 @@ public class SessionController {
        * only set to https in production
        */
       if (System.getenv("JAVA_ENV") == "production") {
-        // cookie.setSecure(true);
+        cookie.setSecure(true);
       }
 
       cookie.setHttpOnly(true);
       response.addCookie(cookie);
 
       HttpHeaders responseHeaders = new HttpHeaders();
-      // responseHeaders.add("Access-Control-Allow-Credentials", "true");
-      // responseHeaders.add("Access-Control-Allow-Origin", "*");
-      // responseHeaders.add("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT,
-      // OPTIONS, HEAD");
-      // responseHeaders.add("Access-Control-Allow-Headers", "Content-Type, Accept,
-      // X-Requested-With");
 
       return new ResponseEntity<String>("", responseHeaders, HttpStatus.OK);
     } else {
