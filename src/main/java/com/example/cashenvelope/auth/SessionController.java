@@ -105,6 +105,8 @@ public class SessionController {
       response.addCookie(cookie);
 
       HttpHeaders responseHeaders = new HttpHeaders();
+      responseHeaders.add("Access-Control-Allow-Credentials", "true");
+      // responseHeaders.add("Access-Control-Allow-Origin", "*");
 
       return new ResponseEntity<String>("", responseHeaders, HttpStatus.OK);
     } else {
