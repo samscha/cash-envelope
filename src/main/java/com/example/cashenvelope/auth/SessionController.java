@@ -98,7 +98,7 @@ public class SessionController {
        * only set to https in production
        */
       if (System.getenv("JAVA_ENV") == "production") {
-        cookie.setSecure(true);
+        // cookie.setSecure(true);
       }
 
       cookie.setHttpOnly(true);
